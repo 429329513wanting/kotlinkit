@@ -83,7 +83,6 @@ interface HttpAPI {
 
     /**
      * 上传图片
-     *
      */
     @Multipart
     @POST("{path}")
@@ -92,5 +91,25 @@ interface HttpAPI {
                 @Part params:MultipartBody.Part): Observable<Any>
 
 
+    /**
+     * Multi上传
+     */
+    @Multipart
+    @POST("{path}")
+    fun upMultiPart(@Path("path",encoded = true) path:String,
+                    @HeaderMap headers: Map<String,String>,
+                    @PartMap params: Map<String, RequestBody>?
+    ): Observable<Any>
+
+
+    /**
+     * Multi上传 fullurl地址
+     */
+    @Multipart
+    @POST
+    fun upFullMultiPart(@Url url:String,
+                    @HeaderMap headers: Map<String,String>,
+                    @PartMap params: Map<String, RequestBody>?
+    ): Observable<Any>
 
 }

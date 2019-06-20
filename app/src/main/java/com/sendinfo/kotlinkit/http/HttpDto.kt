@@ -21,9 +21,10 @@ class HttpDto(url:String) {
     var method:String
     var url:String
     var params:Map<String,String>
+    var multiParams:Map<String,String>? = null
     var partBody:MultipartBody.Part? = null
     var headers:Map<String,String>? = null
-    var isUplaod:Boolean = false
+    var isUploadImage:Boolean = false
 
     var bodyString:String
     lateinit var fullUrl:String

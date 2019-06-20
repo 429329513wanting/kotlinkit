@@ -84,7 +84,7 @@ abstract class BaseMvpFragment<out P : IPresenterContract> : MvpFragment<P>() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    //子类重写
+    //子类需要调用
     protected fun setContentView(layout: Int) {
         mView = inflater!!.inflate(layout, container, false)
         ButterKnife.bind(this, mView)

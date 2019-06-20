@@ -3,15 +3,14 @@ package com.sendinfo.kotlinkit.mvp
 import android.text.TextUtils
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.blankj.utilcode.util.LogUtils
-import com.google.gson.internal.LinkedTreeMap
 import com.ljb.mvp.kotlin.utils.JsonParser
 import com.ljb.mvp.kotlin.utils.RxUtils
 import com.sendinfo.kotlinkit.base.BaseMvpActivity
 import com.sendinfo.kotlinkit.base.BaseMvpFragment
 import com.sendinfo.kotlinkit.http.HttpAPI
 import com.sendinfo.kotlinkit.http.HttpDto
-import com.sendinfo.kotlinkit.http.Response
 import com.sendinfo.kotlinkit.utils.Constant
+import com.sendinfo.kotlinkit.utils.RxPartMapUtil
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -33,7 +32,6 @@ import net.ljb.kt.client.HttpFactory
 class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
 
     private var disposable:Disposable? = null
-
     /**
      * 发送网络请求
      */
@@ -91,10 +89,11 @@ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
         }else if (httpDto.method.equals(Constant.HTTP_METHOD.POST)){
 
             //上传图片接口
-            if (httpDto.isUplaod == true){
+            if (httpDto.isUploadImage == true){
 
                 return httpAPI.upImage(httpDto.url,httpDto.headers!!,httpDto.partBody!!)
             }
+
 
             if (httpDto.url.startsWith("http")){
 
@@ -103,6 +102,11 @@ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
 
                     return httpAPI.sendFullPostBodyRequest(httpDto.url,httpDto.headers!!,httpDto.bodyString)
 
+                }else if(httpDto.multiParams!=null){//mulipart提交
+
+                    return  httpAPI.upFullMultiPart(httpDto.url,
+                        httpDto.headers!!,
+                        RxPartMapUtil.changeToBodyMap(httpDto.multiParams!!))
                 }
                 return httpAPI.sendFullPostRequest(httpDto.url,httpDto.headers!!,httpDto.params)
 
@@ -113,9 +117,14 @@ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
 
                     return httpAPI.sendPostBodyRequest(httpDto.url,httpDto.headers!!,httpDto.bodyString)
 
-                }
-                return httpAPI.sendPostRequest(httpDto.url,httpDto.headers!!,httpDto.params)
+                }else if(httpDto.multiParams!=null){ //mulipart提交
 
+                    return  httpAPI.upMultiPart(httpDto.url,
+                        httpDto.headers!!,
+                        RxPartMapUtil.changeToBodyMap(httpDto.multiParams!!))
+                }
+                //fieldMap提交
+                return httpAPI.sendPostRequest(httpDto.url,httpDto.headers!!,httpDto.params)
             }
         }
 

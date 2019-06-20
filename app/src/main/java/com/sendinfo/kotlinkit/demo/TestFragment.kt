@@ -2,11 +2,9 @@ package com.sendinfo.kotlinkit.demo
 
 import android.os.Bundle
 import cn.pedant.SweetAlert.SweetAlertDialog
-import com.blankj.utilcode.util.LogUtils
 import com.sendinfo.kotlinkit.R
 import com.sendinfo.kotlinkit.base.BaseMvpFragment
 import com.sendinfo.kotlinkit.http.HttpDto
-import com.sendinfo.kotlinkit.http.Response
 import com.sendinfo.kotlinkit.mvp.HttpPresenter
 import com.sendinfo.kotlinkit.mvp.ICommonView
 import com.sendinfo.kotlinkit.mvp.IPresenter
@@ -51,7 +49,7 @@ class TestFragment: BaseMvpFragment<IPresenter>(),ICommonView {
                 //up image
                 var dto2 = HttpDto(Constant.UPLOAD)
                 dto2.method = Constant.HTTP_METHOD.POST
-                dto2.isUplaod = true
+                dto2.isUploadImage = true
                 var file = File("/sdcard/icon_120@2x.png")
                 val requestFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
                 val body: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestFile)

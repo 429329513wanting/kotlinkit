@@ -77,18 +77,6 @@ class MyApplication : Application() {
 
         //使用网址https://www.jianshu.com/p/72494773aace
         Utils.init(this)
-        //        if (ActivityCompat.checkSelfPermission(this,
-        //                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-        //            // TODO: Consider calling
-        //            //    ActivityCompat#requestPermissions
-        //            // here to request the missing permissions, and then overriding
-        //            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-        //            //                                          int[] grantResults)
-        //            // to handle the case where the user grants the permission. See the documentation
-        //            // for ActivityCompat#requestPermissions for more details.
-        //            return;
-        //        }
-        //        CrashUtils.init();
 
     }
 
