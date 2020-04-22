@@ -26,7 +26,6 @@ class MyApplication : Application() {
 
         super.attachBaseContext(base)
         MultiDex.install(this)
-
     }
 
     override fun onCreate() {
@@ -35,8 +34,6 @@ class MyApplication : Application() {
         activityLinkedList = LinkedList()
         instance = this
         context = applicationContext
-        Utils.init(this)
-
 
         initHttp()
 

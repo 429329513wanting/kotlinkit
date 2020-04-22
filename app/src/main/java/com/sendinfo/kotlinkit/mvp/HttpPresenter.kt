@@ -3,11 +3,13 @@ package com.sendinfo.kotlinkit.mvp
 import android.text.TextUtils
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.blankj.utilcode.util.LogUtils
-import com.ljb.mvp.kotlin.utils.JsonParser
+import com.blankj.utilcode.util.ToastUtils
+import com.ljb.mvp.kotlin.utils.JsonTool
 import com.ljb.mvp.kotlin.utils.RxUtils
 import com.sendinfo.kotlinkit.base.BaseMvpActivity
 import com.sendinfo.kotlinkit.base.BaseMvpFragment
-import com.sendinfo.kotlinkit.http.HttpAPI
+import com.sendinfo.kotlinkit.http.EventResp
+import com.sendinfo.kotlinkit.http.HttpTool
 import com.sendinfo.kotlinkit.http.HttpDto
 import com.sendinfo.kotlinkit.utils.Constant
 import com.sendinfo.kotlinkit.utils.RxPartMapUtil
@@ -18,6 +20,8 @@ import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import mvp.ljb.kt.presenter.BaseMvpPresenter
 import net.ljb.kt.client.HttpFactory
+import org.greenrobot.eventbus.EventBus
+import java.lang.Exception
 
 
 /**
@@ -42,11 +46,9 @@ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
 
             disposable = it
             if (!httpDto.slience){
-
                 //显示网络加载
                 showProgressDialog()
             }
-
         })
             .compose(RxUtils.bindToLifecycle(getMvpView()))
             .subscribeOn(Schedulers.io())
@@ -55,8 +57,17 @@ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
 
                 //请求成功
                 dismissDialog()
-                LogUtils.json(JsonParser.toJson(it))
-                getMvpView().onSuccess(it,httpDto)
+                LogUtils.json(JsonTool.toJson(it))
+                //非正常json格式走通知
+                if (!it.toString().startsWith("{")){
+
+                    EventBus.getDefault().post(EventResp(it.toString()))
+
+                }else{
+
+                    var result = JsonTool.fromJsonToObj(JsonTool.toJson(it),BaseResponse::class.java)
+                    getMvpView().onSuccess(result,httpDto)
+                }
 
             },
                 Consumer<Throwable>{
@@ -68,7 +79,6 @@ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
 
                 })
 
-
     }
 
     /**
@@ -76,55 +86,39 @@ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
      */
     private fun getHttpApi(httpDto: HttpDto): Observable<Any>{
 
-        val httpAPI = HttpFactory.getProtocol(HttpAPI::class.java)
+        val httpAPI = HttpFactory.getProtocol(HttpTool::class.java)
 
+        //GET
         if (httpDto.method.equals(Constant.HTTP_METHOD.GET)){
 
-            if (httpDto.url.startsWith("http")){
+            return httpAPI.sendGetRequest(httpDto.fullUrl,httpDto.headers!!,httpDto.params)
 
-                return httpAPI.sendFullGetRequest(httpDto.url,httpDto.headers!!,httpDto.params)
-            }
-            return httpAPI.sendGetRequest(httpDto.url,httpDto.headers!!,httpDto.params)
-
-        }else if (httpDto.method.equals(Constant.HTTP_METHOD.POST)){
+        }
+        //POST
+        if (httpDto.method.equals(Constant.HTTP_METHOD.POST)){
 
             //上传图片接口
             if (httpDto.isUploadImage == true){
 
-                return httpAPI.upImage(httpDto.url,httpDto.headers!!,httpDto.partBody!!)
+                return httpAPI.upImage(httpDto.fullUrl,httpDto.headers!!,httpDto.partBody!!)
             }
+            //body提交方式
+            if (!TextUtils.isEmpty(httpDto.bodyString)){
 
+                return httpAPI.sendPostBodyRequest(httpDto.url,httpDto.headers!!,httpDto.bodyString)
 
-            if (httpDto.url.startsWith("http")){
+            }
+            //mulipart文件提交
+            if(httpDto.multiParams!=null){
 
-                //body提交方式
-                if (!TextUtils.isEmpty(httpDto.bodyString)){
+                return  httpAPI.upMultiPart(httpDto.fullUrl,
+                    httpDto.headers!!,
+                    RxPartMapUtil.changeToBodyMap(httpDto.multiParams!!))
+            }
+            //表单提交
+            if (httpDto.params != null){
 
-                    return httpAPI.sendFullPostBodyRequest(httpDto.url,httpDto.headers!!,httpDto.bodyString)
-
-                }else if(httpDto.multiParams!=null){//mulipart提交
-
-                    return  httpAPI.upFullMultiPart(httpDto.url,
-                        httpDto.headers!!,
-                        RxPartMapUtil.changeToBodyMap(httpDto.multiParams!!))
-                }
-                return httpAPI.sendFullPostRequest(httpDto.url,httpDto.headers!!,httpDto.params)
-
-            }else{
-
-                //body提交方式
-                if (!TextUtils.isEmpty(httpDto.bodyString)){
-
-                    return httpAPI.sendPostBodyRequest(httpDto.url,httpDto.headers!!,httpDto.bodyString)
-
-                }else if(httpDto.multiParams!=null){ //mulipart提交
-
-                    return  httpAPI.upMultiPart(httpDto.url,
-                        httpDto.headers!!,
-                        RxPartMapUtil.changeToBodyMap(httpDto.multiParams!!))
-                }
-                //fieldMap提交
-                return httpAPI.sendPostRequest(httpDto.url,httpDto.headers!!,httpDto.params)
+                return httpAPI.sendPostRequest(httpDto.fullUrl,httpDto.headers!!,httpDto.params)
             }
         }
 
@@ -164,7 +158,6 @@ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
         if (getMvpView() as? BaseMvpActivity<*> != null){
 
             (getMvpView() as BaseMvpActivity<*>).dismissDialogForRequest()
-
 
         }else{
 

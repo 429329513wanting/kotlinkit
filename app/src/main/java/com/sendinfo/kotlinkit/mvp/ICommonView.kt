@@ -1,7 +1,6 @@
 package com.sendinfo.kotlinkit.mvp
 
 import com.sendinfo.kotlinkit.http.HttpDto
-import com.sendinfo.kotlinkit.http.Response
 import mvp.ljb.kt.contract.IViewContract
 
 
@@ -16,5 +15,5 @@ import mvp.ljb.kt.contract.IViewContract
 
 interface ICommonView:IViewContract {
 
-    fun onSuccess(result:Any,httpDto: HttpDto)
+    fun onSuccess(result:BaseResponse,httpDto: HttpDto)
 }

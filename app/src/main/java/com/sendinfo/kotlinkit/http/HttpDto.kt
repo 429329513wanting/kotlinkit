@@ -1,10 +1,9 @@
 package com.sendinfo.kotlinkit.http
 
 import com.blankj.utilcode.util.LogUtils
-import com.ljb.mvp.kotlin.utils.JsonParser
+import com.ljb.mvp.kotlin.utils.JsonTool
 import com.sendinfo.kotlinkit.utils.Constant
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 
 
 /**
@@ -20,14 +19,17 @@ class HttpDto(url:String) {
 
     var method:String
     var url:String
+    var fullUrl: String
+
     var params:Map<String,String>
     var multiParams:Map<String,String>? = null
-    var partBody:MultipartBody.Part? = null
-    var headers:Map<String,String>? = null
-    var isUploadImage:Boolean = false
-
     var bodyString:String
-    lateinit var fullUrl:String
+    //上传图片
+    var isUploadImage:Boolean = false
+    var partBody:MultipartBody.Part? = null
+
+    var headers:Map<String,String>? = null
+    var slience:Boolean = false
 
     constructor(url: String,slience:Boolean):this(url){
 
@@ -35,12 +37,12 @@ class HttpDto(url:String) {
         this.slience = slience
     }
 
-    var slience:Boolean = false
 
     init {
 
         this.url = url
-        this.method = Constant.HTTP_METHOD.GET
+        this.fullUrl = Constant.BASE1_URL+this.url
+        this.method = Constant.HTTP_METHOD.POST
         this.bodyString = ""
         this.params = mapOf()
         this.headers = mapOf()
@@ -48,17 +50,9 @@ class HttpDto(url:String) {
 
     fun print(){
 
-        var surl:String? = null
-        if (this.url.startsWith("http")){
-            surl = this.url
-        }else{
-
-            surl = Constant.BASE_URL+this.url
-        }
-        fullUrl = surl
-        LogUtils.d("请求URL:\n"+surl+
+        LogUtils.d("请求URL:\n"+fullUrl+
                 "\n"+this.method +
-                "\n请求参数:\n"+JsonParser.toJson(this.params)+
+                "\n请求参数:\n"+JsonTool.toJson(this.params)+
                 "\n\n"+
                 "\nheaders:"+this.headers
         )

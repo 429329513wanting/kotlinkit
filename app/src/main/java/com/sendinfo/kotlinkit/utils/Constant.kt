@@ -12,13 +12,17 @@ package com.sendinfo.kotlinkit.utils
 
 object Constant {
 
-    const val BASE_URL:String = "https://www.wanandroid.com"
+    const val BASE_URL:String = "http://192.168.66.173:9090"
+
+    //测试上传图片
     const val BASE1_URL:String = "http://220.191.224.192:8085"
 
 
     const val BANNER:String = "/banner/json"
-    const val LOGIN:String =  "/user/login"
-    const val UPLOAD:String = BASE1_URL+"/api/upload/fileUpload.htm"
+    const val LOGIN:String =  "/authorize/api/Client/Login"
+
+    const val UPLOAD:String = "/api/upload/fileUpload.htm"
+
 
 
     object HTTP_METHOD{

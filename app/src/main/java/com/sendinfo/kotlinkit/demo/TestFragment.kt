@@ -2,9 +2,12 @@ package com.sendinfo.kotlinkit.demo
 
 import android.os.Bundle
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.blankj.utilcode.util.EncryptUtils
+import com.blankj.utilcode.util.LogUtils
 import com.sendinfo.kotlinkit.R
 import com.sendinfo.kotlinkit.base.BaseMvpFragment
 import com.sendinfo.kotlinkit.http.HttpDto
+import com.sendinfo.kotlinkit.mvp.BaseResponse
 import com.sendinfo.kotlinkit.mvp.HttpPresenter
 import com.sendinfo.kotlinkit.mvp.ICommonView
 import com.sendinfo.kotlinkit.mvp.IPresenter
@@ -42,19 +45,9 @@ class TestFragment: BaseMvpFragment<IPresenter>(),ICommonView {
             SweetAlertDialog.OnSweetClickListener {
 
                 var dto1 = HttpDto(Constant.LOGIN)
-                dto1.method = Constant.HTTP_METHOD.POST
-                dto1.params = mapOf("username" to "gh","password" to "123456")
-                //getPresenter().getData(dto1)
+                dto1.params = mapOf("username" to "system","password" to EncryptUtils.encryptMD5ToString("1").toUpperCase(),"clientType" to "pc")
+                getPresenter().getData(dto1)
 
-                //up image
-                var dto2 = HttpDto(Constant.UPLOAD)
-                dto2.method = Constant.HTTP_METHOD.POST
-                dto2.isUploadImage = true
-                var file = File("/sdcard/icon_120@2x.png")
-                val requestFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-                val body: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestFile)
-                dto2.partBody = body
-                getPresenter().getData(dto2)
 
             },
             SweetAlertDialog.OnSweetClickListener {
@@ -65,10 +58,11 @@ class TestFragment: BaseMvpFragment<IPresenter>(),ICommonView {
     }
 
     override fun initArgs(bundle: Bundle) {
+
     }
 
-    override fun onSuccess(result: Any, httpDto: HttpDto) {
+    override fun onSuccess(result: BaseResponse, httpDto: HttpDto) {
 
-
+        LogUtils.d(result.data,httpDto.url)
     }
 }

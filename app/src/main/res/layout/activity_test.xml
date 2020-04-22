@@ -8,8 +8,6 @@
         android:layout_height="match_parent"
         tools:context=".demo.TestActivity">
 
-
-
     <com.sendinfo.kotlinkit.widget.MyTopNavBar
             android:layout_width="match_parent"
             app:is_show_back="false"
@@ -18,11 +16,28 @@
 
     </com.sendinfo.kotlinkit.widget.MyTopNavBar>
 
-    <FrameLayout
+    <TextView
+            android:id="@+id/test_tv"
+            android:text="POST"
+            android:textSize="@dimen/dp_22"
+            android:textColor="#000"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dp_33"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/container">
+            android:layout_height="wrap_content">
 
-    </FrameLayout>
+    </TextView>
+
+    <TextView
+            android:id="@+id/test2_tv"
+            android:text="UPIMAGE"
+            android:textSize="@dimen/dp_22"
+            android:textColor="#000"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dp_33"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+    </TextView>
 
 </LinearLayout>

@@ -10,7 +10,6 @@ import com.sendinfo.kotlinkit.demo.TestActivity
 import com.sendinfo.kotlinkit.mvp.HttpPresenter
 import com.sendinfo.kotlinkit.mvp.IPresenter
 import com.tbruyelle.rxpermissions2.Permission
-import java.util.jar.Manifest
 
 
 class MainActivity : BaseMvpActivity<IPresenter>() {
