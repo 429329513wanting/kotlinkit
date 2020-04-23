@@ -258,12 +258,6 @@ abstract class BaseMvpActivity<out P : IPresenterContract> : MvpFragmentActivity
 
     }
 
-    /*override fun setContentView(@LayoutRes layoutResID: Int) {
-
-        LayoutInflater.from(this).inflate(layoutResID, parentLinearLayout, true)
-
-    }*/
-
     /**
      * 点击软键盘之外的空白处，隐藏软件盘
      *

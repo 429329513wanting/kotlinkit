@@ -29,14 +29,14 @@ object  RxPartMapUtil {
 
             if (it.contains("file")){
 
-                params.get(it)?.let { it1 -> toRequestBodyOfImage(File(it1))}?.let { it2 ->
+                params[it]?.let { it1 -> toRequestBodyOfImage(File(it1))}?.let { it2 ->
 
                     result.put("file\"; filename=\""+"xx.png"+"", it2)
                 }
 
             }else{
 
-                params.get(it)?.let { it1 -> toRequestBodyOfText(it1) }?.let { it2 -> result.put(it, it2) }
+                params[it]?.let { it1 -> toRequestBodyOfText(it1) }?.let { it2 -> result.put(it, it2) }
 
             }
         }

@@ -33,7 +33,7 @@ import java.lang.Exception
  * </pre>
  */
 
-class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
+ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
 
     private var disposable:Disposable? = null
     /**
@@ -115,7 +115,7 @@ class HttpPresenter: BaseMvpPresenter<ICommonView>(),IPresenter {
                     httpDto.headers!!,
                     RxPartMapUtil.changeToBodyMap(httpDto.multiParams!!))
             }
-            //表单提交
+            //表单form提交
             if (httpDto.params != null){
 
                 return httpAPI.sendPostRequest(httpDto.fullUrl,httpDto.headers!!,httpDto.params)
